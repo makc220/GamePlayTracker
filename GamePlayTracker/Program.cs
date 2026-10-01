@@ -1,6 +1,13 @@
 using GamePlayTracker.Components;
+using Microsoft.EntityFrameworkCore;
+using GamePlayTracker.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContextFactory<GamePlayTrackerContext>(o =>
+    o.UseSqlite("Data Source=gameplaytracker.db"));
+
+builder.Services.AddQuickGridEntityFrameworkAdapter();
 
 // Add services to the container.
 builder.Services.AddRazorComponents();
