@@ -1,0 +1,56 @@
+@page "/games/details"
+@using Microsoft.EntityFrameworkCore
+@using GamePlayTracker.Models
+@inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Game</h2>
+    <hr />
+    @if (game is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Title</dt>
+            <dd class="col-sm-10">@game.Title</dd>
+            <dt class="col-sm-2">Genre</dt>
+            <dd class="col-sm-10">@game.Genre</dd>
+            <dt class="col-sm-2">Developer</dt>
+            <dd class="col-sm-10">@game.Developer</dd>
+            <dt class="col-sm-2">ReleaseDate</dt>
+            <dd class="col-sm-10">@game.ReleaseDate</dd>
+            <dt class="col-sm-2">ReleaseYear</dt>
+            <dd class="col-sm-10">@game.ReleaseYear</dd>
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@game.Description</dd>
+        </dl>
+        <div>
+            <a href="@($"/games/edit?id={game.Id}")">Edit</a> |
+            <a href="@($"/games")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Game? game;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        game = await context.Games.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (game is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+}

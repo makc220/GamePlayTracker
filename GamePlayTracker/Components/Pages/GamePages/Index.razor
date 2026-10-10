@@ -1,0 +1,59 @@
+@page "/games"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using GamePlayTracker.Models
+@using GamePlayTracker.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="games/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="@context.Games.OrderBy(g => g.Id).Skip((CurrentPage - 1) * PageSize).Take(PageSize)">
+    <PropertyColumn Property="game => game.Title" />
+    <PropertyColumn Property="game => game.Genre" />
+    <PropertyColumn Property="game => game.Developer" />
+    <PropertyColumn Property="game => game.ReleaseDate" />
+    <PropertyColumn Property="game => game.ReleaseYear" />
+    <PropertyColumn Property="game => game.Description" />
+
+    <TemplateColumn Context="game">
+        <a href="@($"games/edit?id={game.Id}")">Edit</a> |
+        <a href="@($"games/details?id={game.Id}")">Details</a> |
+        <a href="@($"games/delete?id={game.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+<nav class="mt-3" aria-label="Навігація сторінками">
+    @if (CurrentPage > 1)
+    {
+        <a class="btn btn-outline-primary me-2"
+           href="/games?page=@(CurrentPage - 1)">Назад</a>
+    }
+
+    <span>Сторінка @CurrentPage</span>
+
+    <a class="btn btn-outline-primary ms-2"
+       href="/games?page=@(CurrentPage + 1)">Далі</a>
+</nav>
+
+@code {
+    private const int PageSize = 10;
+
+    [SupplyParameterFromQuery]
+    public int? Page { get; set; }
+
+    private int CurrentPage => Page is > 0 ? Page.Value : 1;
+    private GamePlayTrackerContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
