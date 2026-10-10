@@ -1,0 +1,45 @@
+
+<div class="card mb-3">
+    <div class="card-body">
+        @if (!string.IsNullOrWhiteSpace(Caption))
+        {
+            <h5 class="card-title">@Caption</h5>
+        }
+
+        <h4 class="card-title">@Game.Title</h4>
+
+        @if (ShowDetails)
+        {
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Жанр</dt>
+                <dd class="col-sm-8">@Game.Genre</dd>
+
+                <dt class="col-sm-4">Розробник</dt>
+                <dd class="col-sm-8">@Game.Developer</dd>
+
+                <dt class="col-sm-4">Дата виходу</dt>
+                <dd class="col-sm-8">@Game.ReleaseDate.ToString("dd.MM.yyyy")</dd>
+
+                <dt class="col-sm-4">Рік виходу</dt>
+                <dd class="col-sm-8">@Game.ReleaseYear</dd>
+
+                @if (!string.IsNullOrWhiteSpace(Game.Description))
+                {
+                    <dt class="col-sm-4">Опис</dt>
+                    <dd class="col-sm-8">@Game.Description</dd>
+                }
+            </dl>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public Game Game { get; set; } = default!;
+
+    [Parameter]
+    public string? Caption { get; set; }
+
+    [Parameter]
+    public bool ShowDetails { get; set; } = true;
+}

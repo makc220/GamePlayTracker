@@ -16,20 +16,7 @@
         <p><em>Loading...</em></p>
     }
     else {
-        <dl class="row">
-            <dt class="col-sm-2">Title</dt>
-            <dd class="col-sm-10">@game.Title</dd>
-            <dt class="col-sm-2">Genre</dt>
-            <dd class="col-sm-10">@game.Genre</dd>
-            <dt class="col-sm-2">Developer</dt>
-            <dd class="col-sm-10">@game.Developer</dd>
-            <dt class="col-sm-2">ReleaseDate</dt>
-            <dd class="col-sm-10">@game.ReleaseDate</dd>
-            <dt class="col-sm-2">ReleaseYear</dt>
-            <dd class="col-sm-10">@game.ReleaseYear</dd>
-            <dt class="col-sm-2">Description</dt>
-            <dd class="col-sm-10">@game.Description</dd>
-        </dl>
+      <GameCard Game="game" Caption="Подробиці гри" />
         <div>
             <a href="@($"/games/edit?id={game.Id}")">Edit</a> |
             <a href="@($"/games")">Back to List</a>

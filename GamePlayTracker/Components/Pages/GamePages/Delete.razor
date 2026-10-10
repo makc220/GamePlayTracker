@@ -17,30 +17,10 @@
         <p><em>Loading...</em></p>
     }
     else {
-        <dl class="row">
-            <dt class="col-sm-2">Title</dt>
-            <dd class="col-sm-10">@game.Title</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">Genre</dt>
-            <dd class="col-sm-10">@game.Genre</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">Developer</dt>
-            <dd class="col-sm-10">@game.Developer</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">ReleaseDate</dt>
-            <dd class="col-sm-10">@game.ReleaseDate</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">ReleaseYear</dt>
-            <dd class="col-sm-10">@game.ReleaseYear</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">Description</dt>
-            <dd class="col-sm-10">@game.Description</dd>
-        </dl>
+     <GameCard Game="game"
+          Caption="Ви видаляєте цю гру"
+     ShowDetails="false" />
+     
         <EditForm method="post" Model="game" OnValidSubmit="DeleteGame" FormName="delete" Enhance>
             <button type="submit" class="btn btn-danger" disabled="@(game is null)">Delete</button> |
             <a href="/games">Back to List</a>
