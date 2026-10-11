@@ -14,5 +14,8 @@ public class GamePlayTrackerContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder b)
     {
+        b.Entity<Game>()
+            .HasIndex(g => new { g.Title, g.ReleaseYear })
+            .IsUnique();
     }
 }

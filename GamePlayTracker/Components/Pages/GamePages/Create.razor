@@ -1,5 +1,6 @@
 @page "/games/create"
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.Data.Sqlite
 @using GamePlayTracker.Models
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -14,7 +15,11 @@
     <div class="col-md-4">
         <EditForm method="post" Model="Game" OnValidSubmit="AddGame" FormName="create" Enhance>
             <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
+            <ValidationSummary class="text-danger" role="alert"/> 
+            @if (error is not null)
+                {
+                    <div class="alert alert-danger">@error</div>
+                } 
             <div class="mb-3">
                 <label for="title" class="form-label">Title:</label> 
                 <InputText id="title" @bind-Value="Game.Title" class="form-control" /> 
@@ -38,7 +43,7 @@
             <div class="mb-3">
                 <label for="releaseyear" class="form-label">ReleaseYear:</label> 
                 <InputNumber id="releaseyear" @bind-Value="Game.ReleaseYear" class="form-control" /> 
-                <ValidationMessage For="() => Game.ReleaseYear" class="text-danger" /> 
+                <ValidationMessage For="() => Game.ReleaseYear" class="text-danger" />
             </div>        
             <div class="mb-3">
                 <label for="description" class="form-label">Description:</label> 
@@ -59,13 +64,29 @@
     private Game Game { get; set; } = default!;
 
     protected override void OnInitialized() => Game ??= new();
-
+    private string? error;
+    
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddGame()
     {
         using var context = DbFactory.CreateDbContext();
         context.Games.Add(Game);
-        await context.SaveChangesAsync();
+        if (Game.ReleaseDate.Year != Game.ReleaseYear)
+        {
+            error = "Рік випуску має збігатися з роком у даті випуску";
+             return;
+        }
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+            when (ex.InnerException is SqliteException
+                { SqliteExtendedErrorCode: 2067 })
+        {
+            error = "Гра з такою назвою та роком випуску вже існує";
+            return;
+        }
         NavigationManager.NavigateTo("/games");
     }
 }

@@ -1,5 +1,6 @@
 @page "/games/edit"
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.Data.Sqlite
 @using GamePlayTracker.Models
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -21,6 +22,10 @@ else
             <EditForm method="post" Model="Game" OnValidSubmit="UpdateGame" FormName="edit" Enhance>
                 <DataAnnotationsValidator />
                 <ValidationSummary role="alert"/>
+                @if (error is not null)
+                {
+                    <div class="alert alert-danger">@error</div>
+                } 
                 <input type="hidden" name="Game.Id" value="@Game.Id" />
                 <div class="mb-3">
                     <label for="title" class="form-label">Title:</label>
@@ -46,6 +51,10 @@ else
                     <label for="releaseyear" class="form-label">ReleaseYear:</label>
                     <InputNumber id="releaseyear" @bind-Value="Game.ReleaseYear" class="form-control" />
                     <ValidationMessage For="() => Game.ReleaseYear" class="text-danger" />
+                     @if (error is not null)
+                {
+                    <div class="alert alert-danger">@error</div>
+                }  
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">Description:</label>
@@ -68,7 +77,7 @@ else
 
     [SupplyParameterFromForm]
     private Game? Game { get; set; }
-
+    private string? error;
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
@@ -82,29 +91,49 @@ else
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task UpdateGame()
+private async Task UpdateGame()
+{
+    if (Game is null)
     {
-        using var context = DbFactory.CreateDbContext();
-        context.Attach(Game!).State = EntityState.Modified;
+        return;
+    }
 
-        try
+    if (Game.ReleaseDate.Year != Game.ReleaseYear)
+    {
+        error = "Рік випуску має збігатися з роком у даті випуску";
+        return;
+    }
+
+    error = null;
+
+    using var context = DbFactory.CreateDbContext();
+    context.Attach(Game).State = EntityState.Modified;
+
+    try
+    {
+        await context.SaveChangesAsync();
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+        if (!GameExists(Game.Id))
         {
-            await context.SaveChangesAsync();
+            NavigationManager.NotFound();
         }
-        catch (DbUpdateConcurrencyException)
+        else
         {
-            if (!GameExists(Game!.Id))
-            {
-                NavigationManager.NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            throw;
         }
+    }  
+    catch (DbUpdateException ex)
+        when (ex.InnerException is SqliteException
+            { SqliteExtendedErrorCode: 2067 })
+    {
+        error = "Гра з такою назвою та роком випуску вже існує";
+        return;
+    }
 
         NavigationManager.NavigateTo("/games");
-    }
+}
 
     private bool GameExists(int id)
     {
