@@ -1,4 +1,3 @@
-
 <div class="card mb-3">
     <div class="card-body">
         @if (!string.IsNullOrWhiteSpace(Caption))
@@ -12,7 +11,10 @@
         {
             <dl class="row mb-0">
                 <dt class="col-sm-4">Жанр</dt>
-                <dd class="col-sm-8">@Game.Genre</dd>
+                <dd class="col-sm-8">@Game.Genre?.Name</dd>
+
+                <dt class="col-sm-4">Платформа</dt>
+                <dd class="col-sm-8">@Game.Platform?.Name</dd>
 
                 <dt class="col-sm-4">Розробник</dt>
                 <dd class="col-sm-8">@Game.Developer</dd>

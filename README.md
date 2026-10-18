@@ -7,3 +7,34 @@ GamePlayTracker — вебзастосунок для обліку проход�
 ## Особливість проєкту
 
 Застосунок матиме можливість порівнювати два проходження відеоігор за основними показниками, зокрема платформою, статусом проходження, витраченим часом, оцінкою та датами проходження. Це дасть змогу переглядати характеристики двох записів поруч і бачити відмінності між ними без необхідності порівнювати дані вручну.
+
+## Діаграма класів
+
+```mermaid
+classDiagram
+    class Game {
+        +int Id
+        +string Title
+        +int GenreId
+        +Genre Genre
+        +int PlatformId
+        +Platform Platform
+        +string Developer
+        +DateOnly ReleaseDate
+        +int ReleaseYear
+        +string Description
+    }
+
+    class Genre {
+        +int Id
+        +string Name
+    }
+
+    class Platform {
+        +int Id
+        +string Name
+    }
+
+    Genre "1" <-- "0..*" Game : жанр
+    Platform "1" <-- "0..*" Game : платформа
+```

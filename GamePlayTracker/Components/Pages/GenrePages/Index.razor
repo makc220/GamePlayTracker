@@ -1,0 +1,36 @@
+@page "/genres"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using GamePlayTracker.Models
+@using GamePlayTracker.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="genres/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Genres">
+    <PropertyColumn Property="genre => genre.Name" />
+
+    <TemplateColumn Context="genre">
+        <a href="@($"genres/edit?id={genre.Id}")">Edit</a> |
+        <a href="@($"genres/details?id={genre.Id}")">Details</a> |
+        <a href="@($"genres/delete?id={genre.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private GamePlayTrackerContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

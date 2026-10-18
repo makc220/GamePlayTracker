@@ -26,9 +26,26 @@
                 <ValidationMessage For="() => Game.Title" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="genre" class="form-label">Genre:</label> 
-                <InputText id="genre" @bind-Value="Game.Genre" class="form-control" /> 
-                <ValidationMessage For="() => Game.Genre" class="text-danger" /> 
+                <label for="genre" class="form-label">Жанр:</label>
+                <InputSelect id="genre" @bind-Value="Game.GenreId" class="form-select">
+                    <option value="0">-- Оберіть жанр --</option>
+                    @foreach (var genre in genres)
+                    {
+                        <option value="@genre.Id">@genre.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Game.GenreId" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="platform" class="form-label">Платформа:</label>
+                <InputSelect id="platform" @bind-Value="Game.PlatformId" class="form-select">
+                    <option value="0">-- Оберіть платформу --</option>
+                    @foreach (var platform in platforms)
+                    {
+                        <option value="@platform.Id">@platform.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Game.PlatformId" class="text-danger" />
             </div>        
             <div class="mb-3">
                 <label for="developer" class="form-label">Developer:</label> 
@@ -62,10 +79,21 @@
 @code {
     [SupplyParameterFromForm]
     private Game Game { get; set; } = default!;
-
+    private List<Genre> genres = new();
+    private List<Platform> platforms = new();
     protected override void OnInitialized() => Game ??= new();
     private string? error;
-    
+protected override async Task OnInitializedAsync()
+{
+    using var context = DbFactory.CreateDbContext();
+    genres = await context.Genres
+        .OrderBy(g => g.Name)
+        .ToListAsync();
+
+    platforms = await context.Platforms
+        .OrderBy(p => p.Name)
+        .ToListAsync();
+}
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddGame()
     {

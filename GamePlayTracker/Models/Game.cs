@@ -11,13 +11,14 @@ public class Game
     [StringLength(200, ErrorMessage = "Назва гри не може перевищувати 200 символів")]
     public string Title { get; set; } = "";
 
-    [Required(ErrorMessage = "Зазначте жанр гри")]
-    [StringLength(100, ErrorMessage = "Назва жанру не може перевищувати 100 символів")]
-    public string Genre { get; set; } = "";
+    public int GenreId { get; set; }
+    public Genre? Genre { get; set; }
 
     [Required(ErrorMessage = "Зазначте розробника гри")]
     [StringLength(150, ErrorMessage = "Назва розробника не може перевищувати 150 символів")]
     public string Developer { get; set; } = "";
+    public int PlatformId { get; set; }
+    public Platform? Platform { get; set; }
 
     public DateOnly ReleaseDate { get; set; }
 

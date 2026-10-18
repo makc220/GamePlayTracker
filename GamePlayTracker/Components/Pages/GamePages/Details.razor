@@ -30,14 +30,20 @@
     [SupplyParameterFromQuery]
     private int Id { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        using var context = DbFactory.CreateDbContext();
-        game = await context.Games.FirstOrDefaultAsync(m => m.Id == Id);
 
-        if (game is null)
-        {
-            NavigationManager.NotFound();
-        }
+protected override async Task OnInitializedAsync()
+{
+    using var context = DbFactory.CreateDbContext();
+
+    game = await context.Games
+        .Include(g => g.Genre)
+        .Include(g => g.Platform)
+        .FirstOrDefaultAsync(m => m.Id == Id);
+
+    if (game is null)
+    {
+        NavigationManager.NotFound();
     }
+}
+
 }

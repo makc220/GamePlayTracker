@@ -1,0 +1,36 @@
+@page "/platforms"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using GamePlayTracker.Models
+@using GamePlayTracker.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="platforms/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Platforms">
+    <PropertyColumn Property="platform => platform.Name" />
+
+    <TemplateColumn Context="platform">
+        <a href="@($"platforms/edit?id={platform.Id}")">Edit</a> |
+        <a href="@($"platforms/details?id={platform.Id}")">Details</a> |
+        <a href="@($"platforms/delete?id={platform.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private GamePlayTrackerContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

@@ -1,0 +1,90 @@
+@page "/platforms/edit"
+@using Microsoft.EntityFrameworkCore
+@using GamePlayTracker.Models
+@inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Platform</h2>
+<hr />
+@if (Platform is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Platform" OnValidSubmit="UpdatePlatform" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Platform.Id" value="@Platform.Id" />
+                <div class="mb-3">
+                <span class="text-danger">*</span>
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="Platform.Name" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Platform.Name" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/platforms">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Platform? Platform { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Platform ??= await context.Platforms.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Platform is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdatePlatform()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Platform!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!PlatformExists(Platform!.Id))
+            {
+                NavigationManager.NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/platforms");
+    }
+
+    private bool PlatformExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Platforms.Any(e => e.Id == id);
+    }
+}

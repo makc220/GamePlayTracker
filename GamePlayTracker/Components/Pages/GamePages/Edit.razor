@@ -32,10 +32,27 @@ else
                     <InputText id="title" @bind-Value="Game.Title" class="form-control" />
                     <ValidationMessage For="() => Game.Title" class="text-danger" />
                 </div>
+               <div class="mb-3">
+                    <label for="genre" class="form-label">Жанр:</label>
+                    <InputSelect id="genre" @bind-Value="Game.GenreId" class="form-select">
+                        <option value="0">-- Оберіть жанр --</option>
+                        @foreach (var genre in genres)
+                        {
+                            <option value="@genre.Id">@genre.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => Game.GenreId" class="text-danger" />
+                </div>
                 <div class="mb-3">
-                    <label for="genre" class="form-label">Genre:</label>
-                    <InputText id="genre" @bind-Value="Game.Genre" class="form-control" />
-                    <ValidationMessage For="() => Game.Genre" class="text-danger" />
+                <label for="platform" class="form-label">Платформа:</label>
+                <InputSelect id="platform" @bind-Value="Game.PlatformId" class="form-select">
+                    <option value="0">-- Оберіть платформу --</option>
+                    @foreach (var platform in platforms)
+                    {
+                        <option value="@platform.Id">@platform.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Game.PlatformId" class="text-danger" />
                 </div>
                 <div class="mb-3">
                     <label for="developer" class="form-label">Developer:</label>
@@ -51,10 +68,6 @@ else
                     <label for="releaseyear" class="form-label">ReleaseYear:</label>
                     <InputNumber id="releaseyear" @bind-Value="Game.ReleaseYear" class="form-control" />
                     <ValidationMessage For="() => Game.ReleaseYear" class="text-danger" />
-                     @if (error is not null)
-                {
-                    <div class="alert alert-danger">@error</div>
-                }  
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">Description:</label>
@@ -74,7 +87,8 @@ else
 @code {
     [SupplyParameterFromQuery]
     private int Id { get; set; }
-
+    private List<Genre> genres = new();
+    private List<Platform> platforms = new();
     [SupplyParameterFromForm]
     private Game? Game { get; set; }
     private string? error;
@@ -82,6 +96,8 @@ else
     {
         using var context = DbFactory.CreateDbContext();
         Game ??= await context.Games.FirstOrDefaultAsync(m => m.Id == Id);
+        genres = await context.Genres.OrderBy(g => g.Name).ToListAsync();
+        platforms = await context.Platforms.OrderBy(p => p.Name).ToListAsync();
 
         if (Game is null)
         {

@@ -1,0 +1,47 @@
+@page "/platforms/create"
+@using Microsoft.EntityFrameworkCore
+@using GamePlayTracker.Models
+@inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Platform</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Platform" OnValidSubmit="AddPlatform" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <span class="text-danger">*</span>
+                <label for="name" class="form-label">Name:</label>
+                <InputText id="name" @bind-Value="Platform.Name" class="form-control" aria-required="true"/>
+                <ValidationMessage For="() => Platform.Name" class="text-danger" />
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/platforms">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Platform Platform { get; set; } = default!;
+
+    protected override void OnInitialized() => Platform ??= new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddPlatform()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Platforms.Add(Platform);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/platforms");
+    }
+}

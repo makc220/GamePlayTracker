@@ -1,0 +1,90 @@
+@page "/genres/edit"
+@using Microsoft.EntityFrameworkCore
+@using GamePlayTracker.Models
+@inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Genre</h2>
+<hr />
+@if (Genre is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Genre" OnValidSubmit="UpdateGenre" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Genre.Id" value="@Genre.Id" />
+                <div class="mb-3">
+                <span class="text-danger">*</span>
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="Genre.Name" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Genre.Name" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/genres">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Genre? Genre { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Genre ??= await context.Genres.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Genre is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateGenre()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Genre!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!GenreExists(Genre!.Id))
+            {
+                NavigationManager.NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/genres");
+    }
+
+    private bool GenreExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Genres.Any(e => e.Id == id);
+    }
+}

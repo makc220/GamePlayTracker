@@ -14,9 +14,11 @@
     <a href="games/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="@context.Games.OrderBy(g => g.Id).Skip((CurrentPage - 1) * PageSize).Take(PageSize)">
+<QuickGrid Class="table"
+           Items="@context.Games.Include(g => g.Genre).Include(g => g.Platform).OrderBy(g => g.Id).Skip((CurrentPage - 1) * PageSize).Take(PageSize)">
     <PropertyColumn Property="game => game.Title" />
-    <PropertyColumn Property="game => game.Genre" />
+    <PropertyColumn Property="game => game.Genre!.Name" Title="Жанр" />
+    <PropertyColumn Property="game => game.Platform!.Name" Title="Платформа" />
     <PropertyColumn Property="game => game.Developer" />
     <PropertyColumn Property="game => game.ReleaseDate" />
     <PropertyColumn Property="game => game.ReleaseYear" />
