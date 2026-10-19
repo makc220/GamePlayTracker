@@ -41,7 +41,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        using var context = DbFactory.CreateDbContext();
+        await using var context = await DbFactory.CreateDbContextAsync();
         platform = await context.Platforms.FirstOrDefaultAsync(m => m.Id == Id);
 
         if (platform is null)
@@ -57,7 +57,7 @@ private async Task DeletePlatform()
         return;
     }
 
-    using var context = DbFactory.CreateDbContext();
+    await using var context = await DbFactory.CreateDbContextAsync();
 
     try
     {

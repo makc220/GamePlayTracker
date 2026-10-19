@@ -10,6 +10,7 @@ public class Game
     [Required(ErrorMessage = "Зазначте назву гри")]
     [StringLength(200, ErrorMessage = "Назва гри не може перевищувати 200 символів")]
     public string Title { get; set; } = "";
+    public string TitleSearch { get; set; } = "";
 
     public int GenreId { get; set; }
     public Genre? Genre { get; set; }
@@ -27,4 +28,5 @@ public class Game
 
     [StringLength(2000, ErrorMessage = "Опис не може перевищувати 2000 символів")]
     public string? Description { get; set; }
+    
 }

@@ -85,7 +85,7 @@
     private string? error;
 protected override async Task OnInitializedAsync()
 {
-    using var context = DbFactory.CreateDbContext();
+    await using var context = await DbFactory.CreateDbContextAsync();
     genres = await context.Genres
         .OrderBy(g => g.Name)
         .ToListAsync();
@@ -96,8 +96,8 @@ protected override async Task OnInitializedAsync()
 }
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddGame()
-    {
-        using var context = DbFactory.CreateDbContext();
+    {   Game.TitleSearch = Game.Title.ToLowerInvariant();
+        await using var context = await DbFactory.CreateDbContextAsync();
         context.Games.Add(Game);
         if (Game.ReleaseDate.Year != Game.ReleaseYear)
         {

@@ -94,7 +94,7 @@ else
     private string? error;
     protected override async Task OnInitializedAsync()
     {
-        using var context = DbFactory.CreateDbContext();
+        await using var context = await DbFactory.CreateDbContextAsync();
         Game ??= await context.Games.FirstOrDefaultAsync(m => m.Id == Id);
         genres = await context.Genres.OrderBy(g => g.Name).ToListAsync();
         platforms = await context.Platforms.OrderBy(p => p.Name).ToListAsync();
@@ -122,8 +122,9 @@ private async Task UpdateGame()
 
     error = null;
 
-    using var context = DbFactory.CreateDbContext();
+    await using var context = await DbFactory.CreateDbContextAsync();
     context.Attach(Game).State = EntityState.Modified;
+    Game.TitleSearch = Game.Title.ToLowerInvariant();
 
     try
     {
@@ -131,7 +132,7 @@ private async Task UpdateGame()
     }
     catch (DbUpdateConcurrencyException)
     {
-        if (!GameExists(Game.Id))
+        if (!await GameExistsAsync(Game.Id))
         {
             NavigationManager.NotFound();
         }
@@ -151,9 +152,9 @@ private async Task UpdateGame()
         NavigationManager.NavigateTo("/games");
 }
 
-    private bool GameExists(int id)
+    private async Task<bool> GameExistsAsync(int id)
     {
-        using var context = DbFactory.CreateDbContext();
-        return context.Games.Any(e => e.Id == id);
+        await using var context = await DbFactory.CreateDbContextAsync();
+        return await context.Games.AnyAsync(e => e.Id == id);
     }
 }

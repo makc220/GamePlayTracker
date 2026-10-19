@@ -39,7 +39,7 @@
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddGenre()
     {
-        using var context = DbFactory.CreateDbContext();
+        await using var context = await DbFactory.CreateDbContextAsync();
         context.Genres.Add(Genre);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/genres");

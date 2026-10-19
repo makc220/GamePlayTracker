@@ -33,7 +33,7 @@
 
 protected override async Task OnInitializedAsync()
 {
-    using var context = DbFactory.CreateDbContext();
+    await using var context = await DbFactory.CreateDbContextAsync();
 
     game = await context.Games
         .Include(g => g.Genre)

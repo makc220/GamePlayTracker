@@ -40,7 +40,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        using var context = DbFactory.CreateDbContext();
+        await using var context = await DbFactory.CreateDbContextAsync();
         genre = await context.Genres.FirstOrDefaultAsync(m => m.Id == Id);
 
         if (genre is null)
@@ -58,7 +58,7 @@ private async Task DeleteGenre()
         return;
     }
 
-    using var context = DbFactory.CreateDbContext();
+    await using var context = await DbFactory.CreateDbContextAsync();
 
     try
     {

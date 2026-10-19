@@ -36,7 +36,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        using var context = DbFactory.CreateDbContext();
+        await using var context = await DbFactory.CreateDbContextAsync();
         game = await context.Games.FirstOrDefaultAsync(m => m.Id == Id);
 
         if (game is null)
@@ -47,7 +47,7 @@
 
     private async Task DeleteGame()
     {
-        using var context = DbFactory.CreateDbContext();
+        await using var context = await DbFactory.CreateDbContextAsync();
         context.Games.Remove(game!);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/games");
