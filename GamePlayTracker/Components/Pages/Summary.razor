@@ -1,0 +1,92 @@
+
+@page "/summary"
+@using Microsoft.EntityFrameworkCore
+@using GamePlayTracker.Data
+@using GamePlayTracker.Services
+@inject IDbContextFactory<GamePlayTrackerContext> DbFactory
+
+<PageTitle>Зведення — GamePlayTracker</PageTitle>
+
+<h1>Зведення</h1>
+
+<p>
+    Загальна статистика ігор у GamePlayTracker:
+    розподіл за платформами та роками випуску.
+</p>
+
+@if (total.Count == 0)
+{
+    <div class="alert alert-info">
+        Ігор ще немає, тому формувати зведення поки що нічого.
+        <a href="/games/create">Додайте першу гру</a>.
+    </div>
+}
+else
+{
+    <h2>За платформами</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Платформа</th>
+                <th>Кількість ігор</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in byPlatform)
+            {
+                <tr>
+                    <td>@row.Name</td>
+                    <td>@row.Count</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="table-secondary fw-bold">
+                <td>@total.Name</td>
+                <td>@total.Count</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <h2 class="mt-4">За роками випуску</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Рік випуску</th>
+                <th>Кількість ігор</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in byYear)
+            {
+                <tr>
+                    <td>@row.Name</td>
+                    <td>@row.Count</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<SummaryRow> byPlatform = new();
+    private List<SummaryRow> byYear = new();
+    private SummaryRow total = new("Усього", 0);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var db =
+            await DbFactory.CreateDbContextAsync();
+
+        byPlatform =
+            await SummaryCalculator.ByPlatformAsync(db.Games);
+
+        byYear =
+            await SummaryCalculator.ByYearAsync(db.Games);
+
+        total =
+            await SummaryCalculator.TotalAsync(db.Games);
+    }
+}
