@@ -4,11 +4,10 @@
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Додати платформу</PageTitle>
 
-<h1>Create</h1>
+<h1>Додати платформу</h1>
 
-<h2>Platform</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -17,17 +16,17 @@
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
                 <span class="text-danger">*</span>
-                <label for="name" class="form-label">Name:</label>
+                <label for="name" class="form-label">Назва платформи:</label>
                 <InputText id="name" @bind-Value="Platform.Name" class="form-control" aria-required="true"/>
                 <ValidationMessage For="() => Platform.Name" class="text-danger" />
             </div>
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary">Додати платформу</button>
         </EditForm>
     </div>
 </div>
 
 <div>
-    <a href="/platforms">Back to List</a>
+    <a href="/platforms">Повернутися до списку платформ</a>
 </div>
 
 @code {

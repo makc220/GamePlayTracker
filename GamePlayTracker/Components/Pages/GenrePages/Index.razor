@@ -6,25 +6,33 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Список жанрів</PageTitle>
 
-<h1>Index</h1>
+<h1>Список жанрів</h1>
+@if (Saved)
+{
+    <div class="alert alert-success" role="alert">
+        Зміни успішно збережено.
+    </div>
+}
 
 <p>
-    <a href="genres/create">Create New</a>
+    <a href="genres/create">Створити новий жанр</a>
 </p>
 
 <QuickGrid Class="table" Items="context.Genres">
-    <PropertyColumn Property="genre => genre.Name" />
+    <PropertyColumn Property="genre => genre.Name" Title="Назва" />
 
     <TemplateColumn Context="genre">
-        <a href="@($"genres/edit?id={genre.Id}")">Edit</a> |
-        <a href="@($"genres/details?id={genre.Id}")">Details</a> |
-        <a href="@($"genres/delete?id={genre.Id}")">Delete</a>
+        <a href="@($"genres/edit?id={genre.Id}")">Редагувати</a> |
+        <a href="@($"genres/details?id={genre.Id}")">Деталі</a> |
+        <a href="@($"genres/delete?id={genre.Id}")">Видалити</a>
     </TemplateColumn>
 </QuickGrid>
 
 @code {
+    [SupplyParameterFromQuery(Name = "saved")]
+    public bool Saved { get; set; }
     private GamePlayTrackerContext context = default!;
 
     protected override void OnInitialized()

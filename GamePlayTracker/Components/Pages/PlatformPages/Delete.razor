@@ -4,21 +4,24 @@
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Delete</PageTitle>
+<PageTitle>Видалення платформи</PageTitle>
 
-<h1>Delete</h1>
+<h1>Видалення платформи</h1>
 
-<p>Are you sure you want to delete this?</p>
+@if (platform is not null)
+{
+    <p>Ви впевнені, що хочете видалити платформу «@platform.Name»?</p>
+}
 <div>
-    <h2>Platform</h2>
+    <h2>Інформація про платформу</h2>
     <hr />
     @if (platform is null)
     {
-        <p><em>Loading...</em></p>
+        <p><em>Завантаження...</em></p>
     }
     else {
         <dl class="row">
-            <dt class="col-sm-2">Name</dt>
+            <dt class="col-sm-2">Назва платформи</dt>
             <dd class="col-sm-10">@platform.Name</dd>
         </dl>
         @if (error is not null)
@@ -26,8 +29,8 @@
              <div class="alert alert-danger">@error</div>
         }
         <EditForm method="post" Model="platform" OnValidSubmit="DeletePlatform" FormName="delete" Enhance>
-            <button type="submit" class="btn btn-danger" disabled="@(platform is null)">Delete</button> |
-            <a href="/platforms">Back to List</a>
+            <button type="submit" class="btn btn-danger" disabled="@(platform is null)">Видалити платформу</button> |
+            <a href="/platforms">Повернутись до списку платформ</a>
         </EditForm>
     }
 </div>

@@ -4,15 +4,14 @@
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Edit</PageTitle>
+<PageTitle>Редагування платформи</PageTitle>
 
-<h1>Edit</h1>
+<h1>Редагування платформи</h1>
 
-<h2>Platform</h2>
 <hr />
 @if (Platform is null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Завантаження...</em></p>
 }
 else
 {
@@ -24,18 +23,18 @@ else
                 <input type="hidden" name="Platform.Id" value="@Platform.Id" />
                 <div class="mb-3">
                 <span class="text-danger">*</span>
-                    <label for="name" class="form-label">Name:</label>
+                    <label for="name" class="form-label">Назва платформи:</label>
                     <InputText id="name" @bind-Value="Platform.Name" class="form-control" aria-required="true"/>
                     <ValidationMessage For="() => Platform.Name" class="text-danger" />
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary">Зберегти зміни</button>
             </EditForm>
         </div>
     </div>
 }
 
 <div>
-    <a href="/platforms">Back to List</a>
+    <a href="/platforms">Повернутись до списку платформ</a>
 </div>
 
 @code {

@@ -4,25 +4,24 @@
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Деталі платформи</PageTitle>
 
-<h1>Details</h1>
+<h1>Деталі платформи</h1>
 
 <div>
-    <h2>Platform</h2>
     <hr />
     @if (platform is null)
     {
-        <p><em>Loading...</em></p>
+        <p><em>Завантаження...</em></p>
     }
     else {
         <dl class="row">
-            <dt class="col-sm-2">Name</dt>
+            <dt class="col-sm-2">Назва платформи</dt>
             <dd class="col-sm-10">@platform.Name</dd>
         </dl>
         <div>
-            <a href="@($"/platforms/edit?id={platform.Id}")">Edit</a> |
-            <a href="@($"/platforms")">Back to List</a>
+            <a href="@($"/platforms/edit?id={platform.Id}")">Редагування</a> |
+            <a href="@($"/platforms")">Повернутись до списку платформ</a>
         </div>
     }
 </div>

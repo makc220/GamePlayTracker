@@ -5,15 +5,13 @@
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Edit</PageTitle>
+<PageTitle>Редагування гри</PageTitle>
 
-<h1>Edit</h1>
-
-<h2>Game</h2>
+<h1>Редагування гри</h1>
 <hr />
 @if (Game is null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Завантаження...</em></p>
 }
 else
 {
@@ -28,7 +26,7 @@ else
                 } 
                 <input type="hidden" name="Game.Id" value="@Game.Id" />
                 <div class="mb-3">
-                    <label for="title" class="form-label">Title:</label>
+                    <label for="title" class="form-label">Назва гри:</label>
                     <InputText id="title" @bind-Value="Game.Title" class="form-control" />
                     <ValidationMessage For="() => Game.Title" class="text-danger" />
                 </div>
@@ -55,33 +53,33 @@ else
                 <ValidationMessage For="() => Game.PlatformId" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="developer" class="form-label">Developer:</label>
+                    <label for="developer" class="form-label">Розробник:</label>
                     <InputText id="developer" @bind-Value="Game.Developer" class="form-control" />
                     <ValidationMessage For="() => Game.Developer" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="releasedate" class="form-label">ReleaseDate:</label>
+                    <label for="releasedate" class="form-label">Дата виходу:</label>
                     <InputDate id="releasedate" @bind-Value="Game.ReleaseDate" class="form-control" />
                     <ValidationMessage For="() => Game.ReleaseDate" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="releaseyear" class="form-label">ReleaseYear:</label>
+                    <label for="releaseyear" class="form-label">Рік випуску:</label>
                     <InputNumber id="releaseyear" @bind-Value="Game.ReleaseYear" class="form-control" />
                     <ValidationMessage For="() => Game.ReleaseYear" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="description" class="form-label">Description:</label>
+                    <label for="description" class="form-label">Опис:</label>
                     <InputText id="description" @bind-Value="Game.Description" class="form-control" />
                     <ValidationMessage For="() => Game.Description" class="text-danger" />
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary">Зберегти зміни</button>
             </EditForm>
         </div>
     </div>
 }
 
 <div>
-    <a href="/games">Back to List</a>
+    <a href="/games">Повернутися до списку ігор</a>
 </div>
 
 @code {
@@ -149,7 +147,7 @@ private async Task UpdateGame()
         return;
     }
 
-        NavigationManager.NavigateTo("/games");
+        NavigationManager.NavigateTo("/games?saved=true");
 }
 
     private async Task<bool> GameExistsAsync(int id)

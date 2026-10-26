@@ -4,17 +4,20 @@
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Delete</PageTitle>
+<PageTitle>Видалення гри</PageTitle>
 
-<h1>Delete</h1>
+<h1>Видалення гри</h1>
 
-<p>Are you sure you want to delete this?</p>
+@if (game is not null)
+{
+    <p>Ви впевнені, що хочете видалити гру «@game.Title»?</p>
+}
 <div>
-    <h2>Game</h2>
+    <h2>Інформація про гру</h2>
     <hr />
     @if (game is null)
     {
-        <p><em>Loading...</em></p>
+        <p><em>Завантаження...</em></p>
     }
     else {
      <GameCard Game="game"
@@ -22,8 +25,10 @@
      ShowDetails="false" />
      
         <EditForm method="post" Model="game" OnValidSubmit="DeleteGame" FormName="delete" Enhance>
-            <button type="submit" class="btn btn-danger" disabled="@(game is null)">Delete</button> |
-            <a href="/games">Back to List</a>
+            <button type="submit" class="btn btn-danger" disabled="@(game is null)">
+            Видалити гру
+            </button>
+            <a href="/games" class="btn btn-secondary ms-2">Скасувати</a>
         </EditForm>
     }
 </div>

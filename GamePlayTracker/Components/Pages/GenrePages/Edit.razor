@@ -4,15 +4,14 @@
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Edit</PageTitle>
+<PageTitle>Редагування жанру</PageTitle>
 
-<h1>Edit</h1>
+<h1>Редагування жанру</h1>
 
-<h2>Genre</h2>
 <hr />
 @if (Genre is null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Завантаження...</em></p>
 }
 else
 {
@@ -24,18 +23,18 @@ else
                 <input type="hidden" name="Genre.Id" value="@Genre.Id" />
                 <div class="mb-3">
                 <span class="text-danger">*</span>
-                    <label for="name" class="form-label">Name:</label>
+                    <label for="name" class="form-label">Назва жанру:</label>
                     <InputText id="name" @bind-Value="Genre.Name" class="form-control" aria-required="true"/>
                     <ValidationMessage For="() => Genre.Name" class="text-danger" />
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary">Зберегти зміни</button>
             </EditForm>
         </div>
     </div>
 }
 
 <div>
-    <a href="/genres">Back to List</a>
+    <a href="/genres">Повернутись до списку жанрів</a>
 </div>
 
 @code {

@@ -4,22 +4,21 @@
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Деталі гри</PageTitle>
 
-<h1>Details</h1>
+<h1>Деталі гри</h1>
 
 <div>
-    <h2>Game</h2>
     <hr />
     @if (game is null)
     {
-        <p><em>Loading...</em></p>
+        <p><em>Завантаження...</em></p>
     }
     else {
       <GameCard Game="game" Caption="Подробиці гри" />
         <div>
-            <a href="@($"/games/edit?id={game.Id}")">Edit</a> |
-            <a href="@($"/games")">Back to List</a>
+            <a href="@($"/games/edit?id={game.Id}")">Редагування</a> |
+            <a href="@($"/games")">Повернутися до списку ігор</a>
         </div>
     }
 </div>

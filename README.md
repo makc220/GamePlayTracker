@@ -38,3 +38,9 @@ classDiagram
     Genre "1" <-- "0..*" Game : жанр
     Platform "1" <-- "0..*" Game : платформа
 ```
+
+![Перелік ігор](docs/game-list.png)
+
+![Редагування гри](docs/game-edit.png)
+
+![Сторінка зведань](docs/summary.png)

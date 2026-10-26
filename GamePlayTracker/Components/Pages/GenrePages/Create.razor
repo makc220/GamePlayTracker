@@ -4,11 +4,9 @@
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Додавання жанру</PageTitle>
 
-<h1>Create</h1>
-
-<h2>Genre</h2>
+<h1>Додавання жанру</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -17,17 +15,17 @@
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
                 <span class="text-danger">*</span>
-                <label for="name" class="form-label">Name:</label>
+                <label for="name" class="form-label">Назва жанру:</label>
                 <InputText id="name" @bind-Value="Genre.Name" class="form-control" aria-required="true"/>
                 <ValidationMessage For="() => Genre.Name" class="text-danger" />
             </div>
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary">Додати жанр</button>
         </EditForm>
     </div>
 </div>
 
 <div>
-    <a href="/genres">Back to List</a>
+    <a href="/genres">Повернутися до списку жанрів</a>
 </div>
 
 @code {
