@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:5142
+
+### Отримати список ігор
+GET {{baseUrl}}/api/games
+Accept: application/json
+
+### Отримати гру за ID
+GET {{baseUrl}}/api/games/21
+Accept: application/json
+
+### Перевірити відсутню гру
+GET {{baseUrl}}/api/games/99999
+Accept: application/json
+
+### Отримати зведення
+GET {{baseUrl}}/api/summary
+Accept: application/json
