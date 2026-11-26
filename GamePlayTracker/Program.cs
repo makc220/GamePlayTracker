@@ -6,7 +6,8 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContextFactory<GamePlayTrackerContext>(o =>
-    o.UseSqlite("Data Source=gameplaytracker.db"));
+    o.UseSqlite(
+        builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 
@@ -16,6 +17,14 @@ builder.Services.AddRazorComponents()
 builder.Services.AddOpenApi();
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbFactory = scope.ServiceProvider
+        .GetRequiredService<IDbContextFactory<GamePlayTrackerContext>>();
+
+    await using var db = await dbFactory.CreateDbContextAsync();
+    await db.Database.MigrateAsync();
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

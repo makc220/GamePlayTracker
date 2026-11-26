@@ -4,6 +4,7 @@
 @using GamePlayTracker.Models
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject ILogger<Create> Logger
 
 <PageTitle>Додавання гри</PageTitle>
 
@@ -105,6 +106,7 @@ protected override async Task OnInitializedAsync()
         try
         {
             await context.SaveChangesAsync();
+            Logger.LogInformation("Створено гру з ID {GameId}", Game.Id);
         }
         catch (DbUpdateException ex)
             when (ex.InnerException is SqliteException

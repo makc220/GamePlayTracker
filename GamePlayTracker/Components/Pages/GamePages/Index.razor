@@ -4,6 +4,7 @@
 @using GamePlayTracker.Models
 @using GamePlayTracker.Data
 @inject IDbContextFactory<GamePlayTrackerContext> DbFactory
+@inject IConfiguration Config
 
 <PageTitle>Список ігор</PageTitle>
 
@@ -111,7 +112,7 @@ else
 @code {
     [SupplyParameterFromQuery(Name = "saved")]
     public bool Saved { get; set; }
-    private const int PageSize = 10;
+    private int PageSize => Config.GetValue<int>("GamePlayTracker:PageSize");
 
     [SupplyParameterFromQuery(Name = "page")]
     public int? Page { get; set; }

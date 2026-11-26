@@ -3,6 +3,7 @@
 @using GamePlayTracker.Models
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject ILogger<Delete> Logger
 
 <PageTitle>Видалення гри</PageTitle>
 
@@ -15,25 +16,35 @@
 <div>
     <h2>Інформація про гру</h2>
     <hr />
-    @if (game is null)
-    {
-        <p><em>Завантаження...</em></p>
-    }
-    else {
-     <GameCard Game="game"
-          Caption="Ви видаляєте цю гру"
-     ShowDetails="false" />
-     
-        <EditForm method="post" Model="game" OnValidSubmit="DeleteGame" FormName="delete" Enhance>
-            <button type="submit" class="btn btn-danger" disabled="@(game is null)">
+@if (notFound)
+{
+    <div class="alert alert-warning">
+        Гру з таким ідентифікатором не знайдено.
+    </div>
+    <a href="/games">Повернутися до списку ігор</a>
+}
+else if (game is null)
+{
+    <p><em>Завантаження...</em></p>
+}
+else
+{
+    <GameCard Game="game"
+              Caption="Ви видаляєте цю гру"
+              ShowDetails="false" />
+
+    <EditForm method="post" Model="game" OnValidSubmit="DeleteGame"
+              FormName="delete" Enhance>
+        <button type="submit" class="btn btn-danger">
             Видалити гру
-            </button>
-            <a href="/games" class="btn btn-secondary ms-2">Скасувати</a>
-        </EditForm>
-    }
+        </button>
+        <a href="/games" class="btn btn-secondary ms-2">Скасувати</a>
+    </EditForm>
+}
 </div>
 
 @code {
+    private bool notFound;
     private Game? game;
 
     [SupplyParameterFromQuery]
@@ -46,7 +57,7 @@
 
         if (game is null)
         {
-            NavigationManager.NotFound();
+            notFound = true;
         }
     }
 
@@ -55,6 +66,7 @@
         await using var context = await DbFactory.CreateDbContextAsync();
         context.Games.Remove(game!);
         await context.SaveChangesAsync();
+        Logger.LogInformation("Видалено гру з ID {GameId}", game!.Id);
         NavigationManager.NavigateTo("/games");
     }
 }

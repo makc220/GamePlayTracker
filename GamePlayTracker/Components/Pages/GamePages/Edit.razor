@@ -4,12 +4,19 @@
 @using GamePlayTracker.Models
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject ILogger<Edit> Logger
 
 <PageTitle>Редагування гри</PageTitle>
 
 <h1>Редагування гри</h1>
 <hr />
-@if (Game is null)
+@if (notFound)
+{
+    <div class="alert alert-warning">
+        Гру з таким ідентифікатором не знайдено.
+    </div>
+}
+else if (Game is null)
 {
     <p><em>Завантаження...</em></p>
 }
@@ -83,6 +90,7 @@ else
 </div>
 
 @code {
+    private bool notFound;
     [SupplyParameterFromQuery]
     private int Id { get; set; }
     private List<Genre> genres = new();
@@ -99,7 +107,7 @@ else
 
         if (Game is null)
         {
-            NavigationManager.NotFound();
+            notFound = true;
         }
     }
 
@@ -127,12 +135,14 @@ private async Task UpdateGame()
     try
     {
         await context.SaveChangesAsync();
+        Logger.LogInformation("Змінено гру з ID {GameId}", Game.Id);
     }
     catch (DbUpdateConcurrencyException)
     {
         if (!await GameExistsAsync(Game.Id))
         {
-            NavigationManager.NotFound();
+            notFound = true;
+            return;
         }
         else
         {

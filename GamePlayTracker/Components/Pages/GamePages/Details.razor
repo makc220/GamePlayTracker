@@ -2,7 +2,6 @@
 @using Microsoft.EntityFrameworkCore
 @using GamePlayTracker.Models
 @inject IDbContextFactory<GamePlayTracker.Data.GamePlayTrackerContext> DbFactory
-@inject NavigationManager NavigationManager
 
 <PageTitle>Деталі гри</PageTitle>
 
@@ -10,21 +9,30 @@
 
 <div>
     <hr />
-    @if (game is null)
+
+    @if (notFound)
+    {
+        <p>Гру з таким ідентифікатором не знайдено.</p>
+        <a href="/games">Повернутися до списку ігор</a>
+    }
+    else if (game is null)
     {
         <p><em>Завантаження...</em></p>
     }
-    else {
-      <GameCard Game="game" Caption="Подробиці гри" />
+    else
+    {
+        <GameCard Game="game" Caption="Подробиці гри" />
+
         <div>
             <a href="@($"/games/edit?id={game.Id}")">Редагування</a> |
-            <a href="@($"/games")">Повернутися до списку ігор</a>
+            <a href="/games">Повернутися до списку ігор</a>
         </div>
     }
 </div>
 
 @code {
     private Game? game;
+    private bool notFound;
 
     [SupplyParameterFromQuery]
     private int Id { get; set; }
@@ -41,7 +49,7 @@ protected override async Task OnInitializedAsync()
 
     if (game is null)
     {
-        NavigationManager.NotFound();
+        notFound = true;
     }
 }
 

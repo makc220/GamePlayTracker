@@ -1,6 +1,8 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject IConfiguration Config
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">GamePlayTracker</a>
+        <a class="navbar-brand" href="">@Config["GamePlayTracker:Title"]</a>
     </div>
 </div>
 
